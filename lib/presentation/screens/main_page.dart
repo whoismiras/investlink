@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:polygon_crypto/core/app_router.dart';
 import 'package:polygon_crypto/domain/cubits/crypto_cubit.dart';
 import 'package:polygon_crypto/presentation/widgets/currency_widget.dart';
 
@@ -13,8 +14,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  @override
-  void initState() {}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +132,15 @@ class _MainPageState extends State<MainPage> {
                     itemBuilder: (context, index) {
                       return CurrencyWidget(
                         ticker: state.cryptoCurrencies.elementAt(index),
+                        onPressed: () {
+                          context.read<CryptoCubit>().getCurrencyData(
+                              state.cryptoCurrencies.elementAt(index).name ??
+                                  '');
+                          AppRouter.toCurrencyDetail(
+                              state.cryptoCurrencies.elementAt(index).name,
+                              state.cryptoCurrencies.elementAt(index).price,
+                              context);
+                        },
                       );
                     });
               },

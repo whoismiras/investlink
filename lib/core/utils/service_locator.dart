@@ -8,7 +8,7 @@ final GetIt sl = GetIt.instance;
 void setupServiceLocator() {
   sl
     ..registerLazySingleton<HttpClient>(
-      () => HttpClient(baseUrl: 'https://api.polygon.io/v2'),
+      () => HttpClient(baseUrl: 'https://api.polygon.io/v2/aggs'),
     )
     ..registerLazySingleton<CryptoRepository>(() => CryptoRepository())
     ..registerLazySingleton<CryptoProvider>(() => CryptoProvider());
