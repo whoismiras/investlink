@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:polygon_crypto/core/utils/bearer_interceptor.dart';
-import 'package:polygon_crypto/core/utils/service_locator.dart';
 
 class HttpClient {
   HttpClient({required baseUrl}) {
@@ -12,9 +11,9 @@ class HttpClient {
       baseUrl: baseUrl,
     );
     _dio = Dio(options);
-    _dio.options.connectTimeout = 50000 as Duration;
-    _dio.options.receiveTimeout = 30000 as Duration;
-    _dio.interceptors.add(BearerTokenInterceptor(sl()));
+    _dio.options.connectTimeout = Duration(seconds: 50);
+    _dio.options.receiveTimeout = Duration(seconds: 30);
+    _dio.interceptors.add(BearerTokenInterceptor());
     return _dio;
   }
 
@@ -100,8 +99,8 @@ Future<Dio> initHttp(baseUrl) async {
   );
 
   _dio = Dio(options);
-  _dio.options.connectTimeout = 50000 as Duration?;
-  _dio.options.receiveTimeout = 30000 as Duration?;
-  _dio.interceptors.add(BearerTokenInterceptor(sl()));
+  _dio.options.connectTimeout = Duration(seconds: 50);
+  _dio.options.receiveTimeout = Duration(seconds: 30);
+  _dio.interceptors.add(BearerTokenInterceptor());
   return _dio;
 }

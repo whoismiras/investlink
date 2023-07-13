@@ -20,7 +20,10 @@ class PoligonCrypto extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => CryptoCubit()..getCryptoData()),
+        BlocProvider(
+          lazy: false,
+          create: (_) => CryptoCubit()..getCryptoData(),
+        ),
       ],
       child: ChangeNotifierProvider(
         create: (context) {},

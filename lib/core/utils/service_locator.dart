@@ -4,7 +4,6 @@ import 'package:polygon_crypto/data/providers/crypto_provider.dart';
 import 'package:polygon_crypto/data/repositories/crypto_repository.dart';
 
 final GetIt sl = GetIt.instance;
-HttpClient httpClient = sl.get<HttpClient>();
 
 void setupServiceLocator() {
   sl
@@ -12,5 +11,5 @@ void setupServiceLocator() {
       () => HttpClient(baseUrl: 'https://api.polygon.io/v2'),
     )
     ..registerLazySingleton<CryptoRepository>(() => CryptoRepository())
-    ..registerLazySingleton<CryptoProvider>(() => CryptoProvider(httpClient));
+    ..registerLazySingleton<CryptoProvider>(() => CryptoProvider());
 }
