@@ -5,7 +5,7 @@ part 'crypto_model.g.dart';
 
 @JsonSerializable()
 class CryptoModel extends Equatable {
-  CryptoModel({
+  const CryptoModel({
     this.close,
     this.open,
     this.high,

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RichTextWidget extends StatelessWidget {
@@ -16,14 +15,14 @@ class RichTextWidget extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: '$text',
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.grey,
           fontSize: 16,
         ),
         children: <TextSpan>[
           TextSpan(
             text: '$number',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontSize: 16,
             ),

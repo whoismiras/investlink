@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:polygon_crypto/core/const.dart';
 import 'package:polygon_crypto/core/utils/service_locator.dart';
 import 'package:polygon_crypto/data/repositories/crypto_repository.dart';
 import 'package:polygon_crypto/domain/models/crypto/crypto_model.dart';
@@ -10,7 +11,7 @@ part 'crypto_state.dart';
 class CryptoCubit extends Cubit<CryptoState> {
   CryptoCubit()
       : _cryptoRepository = sl(),
-        super(CryptoState());
+        super(const CryptoState());
 
   final CryptoRepository _cryptoRepository;
 
@@ -44,7 +45,10 @@ class CryptoCubit extends Cubit<CryptoState> {
     final result = state.cryptoCurrencies
       ..sort((a, b) => a.price!.compareTo(b.price!));
     emit(
-      state.copyWith(cryptoCurrencies: result),
+      state.copyWith(
+        cryptoCurrencies: result,
+        sortStatus: Status.price,
+      ),
     );
   }
 
@@ -52,31 +56,45 @@ class CryptoCubit extends Cubit<CryptoState> {
     final result = state.cryptoCurrencies
       ..sort((a, b) => a.high!.compareTo(b.high!));
     emit(
-      state.copyWith(cryptoCurrencies: result),
-    );
-  }
-
-  void getCurrencyData(String cryptoTicker, {int days = 1}) async {
-    final data =
-        await _cryptoRepository.getCurrencyData(cryptoTicker, days: days);
-    emit(
       state.copyWith(
-        currency: data,
-        isLoading: false,
-        days: days,
+        cryptoCurrencies: result,
+        sortStatus: Status.change,
       ),
     );
   }
 
-  void activate() {
-    if (state.currentDateFilter == true) {
-      //   emit(
-      //    // state.copyWith(currentDateFilter: ''),
-      //   );
-      // } else {
-      //   emit(
-      //    // state.copyWith(currentDateFilter: ''),
-      //   );
+  void getCurrencyData(String cryptoTicker,
+      {CryptoDateFilter days = CryptoDateFilter.oneD}) async {
+    final data = await _cryptoRepository.getCurrencyData(
+      cryptoTicker,
+      days: getSelectedFilter(days),
+    );
+    emit(
+      state.copyWith(
+        currency: data,
+        isLoading: false,
+        days: getSelectedFilter(days),
+        selectedFilter: days,
+      ),
+    );
+  }
+
+  int getSelectedFilter(CryptoDateFilter cryptoDateFilter) {
+    switch (cryptoDateFilter) {
+      case CryptoDateFilter.oneD:
+        return 1;
+
+      case CryptoDateFilter.fiveD:
+        return 4;
+
+      case CryptoDateFilter.oneW:
+        return 6;
+
+      case CryptoDateFilter.oneM:
+        return 29;
+
+      case CryptoDateFilter.threeM:
+        return 90;
     }
   }
 }

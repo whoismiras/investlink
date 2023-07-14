@@ -11,17 +11,13 @@ class HttpClient {
       baseUrl: baseUrl,
     );
     _dio = Dio(options);
-    _dio.options.connectTimeout = Duration(seconds: 50);
-    _dio.options.receiveTimeout = Duration(seconds: 30);
+    _dio.options.connectTimeout = const Duration(seconds: 50);
+    _dio.options.receiveTimeout = const Duration(seconds: 30);
     _dio.interceptors.add(BearerTokenInterceptor());
     return _dio;
   }
 
   late Dio _dio;
-
-  static const String refreshPath = '/auth/refresh';
-  static const String accessTokenKey = 'access';
-  static const String refreshTokenKey = 'refresh';
 
   Future<Response> get(
     String path, {
@@ -99,8 +95,8 @@ Future<Dio> initHttp(baseUrl) async {
   );
 
   _dio = Dio(options);
-  _dio.options.connectTimeout = Duration(seconds: 50);
-  _dio.options.receiveTimeout = Duration(seconds: 30);
+  _dio.options.connectTimeout = const Duration(seconds: 50);
+  _dio.options.receiveTimeout = const Duration(seconds: 30);
   _dio.interceptors.add(BearerTokenInterceptor());
   return _dio;
 }

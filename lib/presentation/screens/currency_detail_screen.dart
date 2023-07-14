@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:polygon_crypto/core/app_router.dart';
 import 'package:polygon_crypto/domain/cubits/crypto_cubit.dart';
 import 'package:polygon_crypto/domain/models/crypto/crypto_model.dart';
@@ -29,14 +30,14 @@ class CurrencyDetailScreen extends StatelessWidget {
           onPressed: () {
             AppRouter.back(context);
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
           ),
         ),
         title: Text(
-          '${tickerName}',
-          style: TextStyle(
+          '$tickerName',
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 36,
           ),
@@ -54,14 +55,14 @@ class CurrencyDetailScreen extends StatelessWidget {
                   child: RichText(
                     text: TextSpan(
                       text: 'ЦЕНА:  ',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 16,
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: '${tickerPrice}',
-                          style: TextStyle(
+                          text: '$tickerPrice',
+                          style: const TextStyle(
                             color: Colors.black,
                             fontSize: 32,
                           ),
@@ -70,122 +71,90 @@ class CurrencyDetailScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                DividerWidget(),
-
-                // Container(
-                //   height: 100,
-                //   child: ListView.builder(
-                //     scrollDirection: Axis.horizontal,
-                //     shrinkWrap: true,
-                //     itemCount: state.currentDateFilter.length,
-                //     itemBuilder: (context, index) {
-                //       return Padding(
-                //         padding: const EdgeInsets.all(8.0),
-                //         child: CupertinoButton(
-                //           padding: EdgeInsets.all(24),
-                //           color: Colors.yellow,
-                //           child: Text(
-                //             state.currentDateFilter.elementAt(index).name,
-                //             style: TextStyle(color: Colors.black),
-                //           ),
-                //           onPressed: () {
-                //             context
-                //                 .read<CryptoCubit>()
-                //                 .getCurrencyData(tickerName ?? '', days: 0);
-                //           },
-                //         ),
-                //       );
-                //     },
-                //   ),
-                // ),
-
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       CupertinoButton(
-                //         padding: EdgeInsets.zero,
-                //         color: state.isActive ? Colors.green : Colors.white,
-                //         child: Text(
-                //           '1Д',
-                //           style: TextStyle(color: Colors.black),
-                //         ),
-                //         onPressed: () {
-                //           context
-                //               .read<CryptoCubit>()
-                //               .getCurrencyData(tickerName ?? '', days: 0);
-                //         },
-                //       ),
-                //       CupertinoButton(
-                //         padding: EdgeInsets.zero,
-                //         color: state.isActive ? Colors.green : Colors.white,
-                //         child: Text(
-                //           '5Д',
-                //           style: TextStyle(color: Colors.black),
-                //         ),
-                //         onPressed: () {
-                //           context
-                //               .read<CryptoCubit>()
-                //               .getCurrencyData(tickerName ?? '', days: 4);
-                //         },
-                //       ),
-                //       CupertinoButton(
-                //         padding: EdgeInsets.zero,
-                //         color: state.isActive ? Colors.green : Colors.white,
-                //         child: Text(
-                //           '1Н',
-                //           style: TextStyle(color: Colors.black),
-                //         ),
-                //         onPressed: () {},
-                //       ),
-                //       CupertinoButton(
-                //         child: Text(
-                //           '1МЕС',
-                //           style: TextStyle(color: Colors.black),
-                //         ),
-                //         onPressed: () {},
-                //       ),
-                //       CupertinoButton(
-                //         child: Text(
-                //           '3МЕС',
-                //           style: TextStyle(color: Colors.black),
-                //         ),
-                //         onPressed: () {},
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                DividerWidget(),
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
+                const DividerWidget(),
+                SizedBox(
+                  height: 70,
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    scrollDirection: Axis.horizontal,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: state.currentDateFilter.length,
+                    itemBuilder: (context, index) {
+                      final filter = state.currentDateFilter[index];
+                      return Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          color: filter == state.selectedFilter
+                              ? Colors.green
+                              : Colors.grey.withOpacity(0.1),
+                          child: Text(
+                            state.currentDateFilter.elementAt(index).name,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                          onPressed: () {
+                            context.read<CryptoCubit>().getCurrencyData(
+                                  tickerName ?? '',
+                                  days: filter,
+                                );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const DividerWidget(),
+                if ((state.currency == null) || (state.isLoading == true))
+                  Center(
+                    child: LoadingAnimationWidget.inkDrop(
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                  ),
+                if (state.currency != null)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: SfCartesianChart(
-                        primaryXAxis: CategoryAxis(),
+                        primaryXAxis: DateTimeAxis(),
                         series: <ChartSeries>[
-                          LineSeries<CryptoModel?, String>(
+                          LineSeries<List<CryptoModel>?, DateTime>(
+                            color: Colors.red,
+                            width: 50,
+                            isVisible: true,
                             dataSource: [
                               state.currency,
                             ],
-                            xValueMapper: (CryptoModel? data, _) =>
-                                state.days.toString(),
-                            yValueMapper: (CryptoModel? data, _) => data?.close,
+                            xValueMapper: (List<CryptoModel>? data, _) =>
+                                DateTime.now().subtract(
+                              Duration(days: state.days!),
+                            ),
+                            yValueMapper: (List<CryptoModel>? data, _) =>
+                                state.currency?.elementAt(_).close,
                           ),
                         ],
                       ),
                     ),
                   ),
-                ),
-                DividerWidget(),
-                TableWidget(
-                  high: state.currency?.high,
-                  low: state.currency?.low,
-                  open: state.currency?.open,
-                  close: state.currency?.close,
-                ),
-                DividerWidget(),
-                SizedBox(height: 50),
+                const DividerWidget(),
+                if ((state.currency?.last.high == null) ||
+                    (state.isLoading == true))
+                  Center(
+                    child: LoadingAnimationWidget.inkDrop(
+                      color: Colors.black,
+                      size: 16,
+                    ),
+                  ),
+                if (state.currency?.last.high != null)
+                  TableWidget(
+                    high: state.currency?.last.high,
+                    low: state.currency?.last.low,
+                    open: state.currency?.last.open,
+                    close: state.currency?.last.close,
+                  ),
+                const DividerWidget(),
+                const SizedBox(height: 50),
               ],
             );
           },

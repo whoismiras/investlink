@@ -15,11 +15,13 @@ class CryptoRepository {
         const [];
   }
 
-  Future<CryptoModel> getCurrencyData(String cryptoTicker,
+  Future<List<CryptoModel>> getCurrencyData(String cryptoTicker,
       {int days = 1}) async {
     final Response response =
         await _provider.getCurrencyData(cryptoTicker, days);
-    return CryptoModel.fromJson(
-        (response.data['results']) as Map<String, dynamic>);
+    return (response.data['results'] as List<dynamic>?)
+            ?.map((e) => CryptoModel.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        const [];
   }
 }

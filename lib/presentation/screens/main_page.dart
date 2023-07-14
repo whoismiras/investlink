@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -44,12 +44,12 @@ class _MainPageState extends State<MainPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CupertinoButton(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   onPressed: () {
                     context.read<CryptoCubit>().sortByName();
                   },
-                  child: Row(
-                    children: const [
+                  child: const Row(
+                    children: [
                       Icon(
                         Icons.draw,
                         color: Colors.grey,
@@ -69,8 +69,8 @@ class _MainPageState extends State<MainPage> {
                       onPressed: () {
                         context.read<CryptoCubit>().sortByPrice();
                       },
-                      child: Row(
-                        children: const [
+                      child: const Row(
+                        children: [
                           Text(
                             'Цена',
                             style: TextStyle(color: Colors.grey),
@@ -84,12 +84,12 @@ class _MainPageState extends State<MainPage> {
                     ),
                     const SizedBox(width: 20),
                     CupertinoButton(
-                      padding: EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(8),
                       onPressed: () {
                         context.read<CryptoCubit>().sortByChange();
                       },
-                      child: Row(
-                        children: const [
+                      child: const Row(
+                        children: [
                           Text(
                             'Изм.%/\$',
                             style: TextStyle(color: Colors.grey),

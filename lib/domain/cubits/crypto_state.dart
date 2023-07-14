@@ -1,33 +1,32 @@
 part of 'crypto_cubit.dart';
 
-enum Status { initial, name, price, change }
-
-enum CryptoDateFilter { oneDay, fiveDays, oneWeek, oneMonth, threeMonths }
-
 class CryptoState extends Equatable {
   final List<TickerModel> cryptoCurrencies;
-  final CryptoModel? currency;
+  final List<CryptoModel>? currency;
   final Status sortStatus;
   final bool isLoading;
   final List<CryptoDateFilter> currentDateFilter;
   final int? days;
+  final CryptoDateFilter selectedFilter;
 
-  CryptoState({
+  const CryptoState({
     this.cryptoCurrencies = const [],
     this.currency,
     this.sortStatus = Status.initial,
     this.isLoading = true,
     this.currentDateFilter = CryptoDateFilter.values,
     this.days,
+    this.selectedFilter = CryptoDateFilter.oneD,
   });
 
   CryptoState copyWith({
     List<TickerModel>? cryptoCurrencies,
-    CryptoModel? currency,
+    List<CryptoModel>? currency,
     Status? sortStatus,
     bool? isLoading,
     List<CryptoDateFilter>? currentDateFilter,
     int? days,
+    CryptoDateFilter? selectedFilter,
   }) {
     return CryptoState(
       cryptoCurrencies: cryptoCurrencies ?? this.cryptoCurrencies,
@@ -36,6 +35,7 @@ class CryptoState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       currentDateFilter: currentDateFilter ?? this.currentDateFilter,
       days: days ?? days,
+      selectedFilter: selectedFilter ?? this.selectedFilter,
     );
   }
 
@@ -47,5 +47,6 @@ class CryptoState extends Equatable {
         isLoading,
         currentDateFilter,
         days,
+        selectedFilter,
       ];
 }

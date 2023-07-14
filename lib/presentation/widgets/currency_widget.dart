@@ -26,14 +26,14 @@ class CurrencyWidget extends StatelessWidget {
               children: [
                 Text(
                   '${ticker.name}',
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(color: Colors.black),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       '${ticker.price}',
-                      style: TextStyle(color: Colors.black),
+                      style: const TextStyle(color: Colors.black),
                     ),
                     const SizedBox(width: 50),
                     SizedBox(
@@ -42,7 +42,7 @@ class CurrencyWidget extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                         title: Text(
                           '+${(((ticker.high! - ticker.price!) / ticker.high!) * 100).toStringAsFixed(2)}%',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.green,
                           ),
                         ),

@@ -13,10 +13,11 @@ class AppRouter {
     BuildContext context,
   ) {
     final route = MaterialPageRoute(
-        builder: (_) => CurrencyDetailScreen(
-              tickerName: tickerName ?? ' ',
-              tickerPrice: tickerPrice,
-            ));
+      builder: (_) => CurrencyDetailScreen(
+        tickerName: tickerName ?? ' ',
+        tickerPrice: tickerPrice,
+      ),
+    );
     Navigator.of(context).push(route);
   }
 }
