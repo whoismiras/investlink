@@ -18,134 +18,139 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<CryptoCubit>().getCryptoData();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Криптовалюта',
+                      style: TextStyle(fontSize: 36),
+                    ),
+                    CupertinoButton(
+                      child: const Icon(
+                        Icons.search,
+                        size: 36,
+                      ),
+                      onPressed: () {},
+                    )
+                  ],
+                ),
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Криптовалюта',
-                    style: TextStyle(fontSize: 36),
-                  ),
                   CupertinoButton(
-                    child: const Icon(
-                      Icons.search,
-                      size: 36,
+                    padding: const EdgeInsets.all(8),
+                    onPressed: () {
+                      context.read<CryptoCubit>().sortByName();
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.draw,
+                          color: Colors.grey,
+                        ),
+                        Text(
+                          'Тикер/Название',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
                     ),
-                    onPressed: () {},
-                  )
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CupertinoButton(
-                  padding: const EdgeInsets.all(8),
-                  onPressed: () {
-                    context.read<CryptoCubit>().sortByName();
-                  },
-                  child: const Row(
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.draw,
-                        color: Colors.grey,
+                      CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          context.read<CryptoCubit>().sortByPrice();
+                        },
+                        child: const Row(
+                          children: [
+                            Text(
+                              'Цена',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Icon(
+                              Icons.swap_vert,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
-                      Text(
-                        'Тикер/Название',
-                        style: TextStyle(color: Colors.grey),
+                      const SizedBox(width: 20),
+                      CupertinoButton(
+                        padding: const EdgeInsets.all(8),
+                        onPressed: () {
+                          context.read<CryptoCubit>().sortByChange();
+                        },
+                        child: const Row(
+                          children: [
+                            Text(
+                              'Изм.%/\$',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            Icon(
+                              Icons.swap_vert,
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        context.read<CryptoCubit>().sortByPrice();
-                      },
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Цена',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          Icon(
-                            Icons.swap_vert,
-                            color: Colors.grey,
-                          ),
-                        ],
+                ],
+              ),
+              const Divider(
+                color: Colors.grey,
+              ),
+              BlocBuilder<CryptoCubit, CryptoState>(
+                builder: (context, state) {
+                  if (state.isLoading == true) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height.toDouble() / 4,
                       ),
-                    ),
-                    const SizedBox(width: 20),
-                    CupertinoButton(
-                      padding: const EdgeInsets.all(8),
-                      onPressed: () {
-                        context.read<CryptoCubit>().sortByChange();
-                      },
-                      child: const Row(
-                        children: [
-                          Text(
-                            'Изм.%/\$',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                          Icon(
-                            Icons.swap_vert,
-                            color: Colors.grey,
-                          ),
-                        ],
+                      child: Center(
+                        child: LoadingAnimationWidget.inkDrop(
+                          color: Colors.black,
+                          size: 16,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Divider(
-              color: Colors.grey,
-            ),
-            BlocBuilder<CryptoCubit, CryptoState>(
-              builder: (context, state) {
-                if (state.isLoading == true) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height.toDouble() / 4,
-                    ),
-                    child: Center(
-                      child: LoadingAnimationWidget.inkDrop(
-                        color: Colors.black,
-                        size: 16,
-                      ),
-                    ),
-                  );
-                }
-                return ListView.separated(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(12),
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.cryptoCurrencies.length,
-                    separatorBuilder: (_, sep) => const SizedBox(height: 12),
-                    itemBuilder: (context, index) {
-                      return CurrencyWidget(
-                        ticker: state.cryptoCurrencies.elementAt(index),
-                        onPressed: () {
-                          context.read<CryptoCubit>().getCurrencyData(
-                              state.cryptoCurrencies.elementAt(index).name ??
-                                  '');
-                          AppRouter.toCurrencyDetail(
-                              state.cryptoCurrencies.elementAt(index).name,
-                              state.cryptoCurrencies.elementAt(index).price,
-                              context);
-                        },
-                      );
-                    });
-              },
-            ),
-          ],
+                    );
+                  }
+                  return ListView.separated(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(12),
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: state.cryptoCurrencies.length,
+                      separatorBuilder: (_, sep) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        return CurrencyWidget(
+                          ticker: state.cryptoCurrencies.elementAt(index),
+                          onPressed: () {
+                            context.read<CryptoCubit>().getCurrencyData(
+                                state.cryptoCurrencies.elementAt(index).name ??
+                                    '');
+                            AppRouter.toCurrencyDetail(
+                                state.cryptoCurrencies.elementAt(index).name,
+                                state.cryptoCurrencies.elementAt(index).price,
+                                context);
+                          },
+                        );
+                      });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
